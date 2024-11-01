@@ -1,0 +1,9 @@
+---
+   - name: Open Ports on Firewall for solr on HTTPD
+     ansible.builtin.firewalld:
+       port: 8983/tcp
+       state: enabled
+       permanent: true
+       immediate: true
+     when: ansible_os_family == 'RedHat'
+

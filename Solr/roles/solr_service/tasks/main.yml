@@ -1,0 +1,7 @@
+---
+
+ - name: Ensure solr is started and enabled at boot 
+   ansible.builtin.service:
+     name: solr
+     state: started
+     enabled: true 

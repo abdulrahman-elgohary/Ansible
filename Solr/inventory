@@ -1,0 +1,15 @@
+[RedHat]
+184.169.224.219
+
+[RedHat:vars]
+
+ansible_user= ec2-user
+ansible_ssh_private_key_file= ~/.ssh/First_Key.pem
+
+[ubuntu]
+54.177.143.207
+
+[ubuntu:vars]
+
+ansible_user= ubuntu
+ansible_ssh_private_key_file= ~/.ssh/Second_Key.pem

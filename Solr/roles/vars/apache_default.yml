@@ -1,0 +1,7 @@
+#Ubuntu Operating System
+apache_package: apache2
+apache_service: apache2
+
+firewall_package: ufw
+
+java_package: openjdk-17-jre-headless

@@ -1,0 +1,16 @@
+
+---
+# defaults file for first_role
+
+
+      - name: Update All Packages
+        ansible.builtin.package:
+          name: "*"
+          state: latest
+      
+
+      
+      - name: Install required utilites
+        ansible.builtin.package:
+          name: unzip
+          state: latest

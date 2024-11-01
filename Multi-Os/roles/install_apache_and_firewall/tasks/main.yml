@@ -1,0 +1,10 @@
+---
+
+      - name: Install Apache and Firewall
+        ansible.builtin.package:
+          name: "{{ item }}"
+          state: present
+        loop:
+            - "{{ firewall_package }}"
+            - "{{ apache_package }}"
+

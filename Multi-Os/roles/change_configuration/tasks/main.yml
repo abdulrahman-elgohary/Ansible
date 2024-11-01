@@ -1,0 +1,19 @@
+---
+   
+
+
+   - name: Add a new Index.html file
+     ansible.builtin.copy:
+       src: "{{redhat_web_page}}"
+       dest: /var/www/html/
+     when: ansible_os_family == "RedHat"
+     notify: Restart Web Server
+
+   - name: Add a new Index.html file
+     ansible.builtin.copy:
+       src: "{{ubuntu_web_page}}"
+       dest: /var/www/html/
+     when: ansible_os_family == "Debian"
+     notify: Restart Web Server
+
+

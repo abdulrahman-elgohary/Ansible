@@ -1,0 +1,43 @@
+---
+  - name: a Play to run Solr Apache on different operating systems 
+    hosts: all
+    become: true
+    
+
+    vars_files:
+      - roles/vars/vars.yml
+
+    pre_tasks:
+      
+      - name: Load variable files.
+        ansible.builtin.include_vars: "{{ item }}"
+        with_first_found:
+          - roles/vars/apache_{{ ansible_os_family }}.yml
+          - roles/vars/apache_default.yml
+    handlers:
+     - name: Restart Web Server
+       ansible.builtin.service:
+         name: "{{item}}"
+         state: restarted
+       loop:
+         - httpd
+         - apache2
+    
+
+
+
+    roles:
+      - common
+
+      - install_apache_and_firewall
+
+      - ensure_services_are_enabled
+
+      - change_port
+
+      - add_ports_to_firewall
+
+      - selinux_conf
+
+      - role: change_configuration
+        tags: conf

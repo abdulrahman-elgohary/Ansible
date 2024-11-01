@@ -1,0 +1,6 @@
+---
+# handlers file for first_role
+
+  - name: Reload Daemon
+    ansible.builtin.systemd:
+      daemon_reload: true

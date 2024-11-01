@@ -1,0 +1,9 @@
+---
+# handlers file for first_role
+
+  - name: Restart Web Server
+    ansible.builtin.service:
+      name: "{{apache_package}}"
+      state: restarted
+     
+

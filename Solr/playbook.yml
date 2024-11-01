@@ -1,0 +1,21 @@
+---
+  - name: a Play to run Solr Apache on different operating systems 
+    hosts: all
+    become: true 
+    vars_files:
+      - roles/vars/vars.yml
+    pre_tasks:
+      
+      - name: Load variable files.
+        ansible.builtin.include_vars: "{{ item }}"
+        with_first_found:
+          - roles/vars/apache_{{ ansible_os_family }}.yml
+          - roles/vars/apache_default.yml
+    roles:
+      - common
+      - apache_firewall
+      - java
+      - solr_install
+      - solr_config
+      - handlers
+      - solr_firewall     

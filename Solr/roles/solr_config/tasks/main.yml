@@ -1,0 +1,26 @@
+---
+    - name: Adding the environment variable
+      ansible.builtin.lineinfile:
+        path: /home/{{ansible_user}}/.bashrc
+        line: "export SOLR_HOME={{download_dir}}/solr-{{solr_version}}"
+        state: present
+      become: false
+
+    - name: Create Solr User
+      ansible.builtin.user:
+        name: solr
+        shell: /sbin/nologin
+        create_home: true
+
+    - name: Install Solr using installation script
+      ansible.builtin.command: >
+        "{{ download_dir }}/solr-{{ solr_version }}/bin/install_solr_service.sh"
+        "{{ download_dir }}/solr-{{ solr_version }}.tgz"
+        -i /opt
+        -d /var/solr
+        -u solr
+        -s solr
+        -p 8983
+      args:
+        creates: "{{ solr_dir }}/bin/solr"
+      notify: Reload Daemon

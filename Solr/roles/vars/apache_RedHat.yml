@@ -1,0 +1,6 @@
+apache_package: httpd
+apache_service: httpd
+
+firewall_package: firewalld
+      
+java_package: java-17-amazon-corretto-1:17.0.8+8-1.amzn2023.1.x86_64 

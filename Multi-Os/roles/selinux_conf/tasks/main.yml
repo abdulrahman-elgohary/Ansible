@@ -1,0 +1,14 @@
+---
+  - name: Change the Selinux context to Redhat
+    ansible.builtin.command:
+      cmd: "semanage port -a -t http_port_t -p tcp 82"
+
+  - name: Ensure Selinux Service is enabled and running on Ubuntu
+    ansible.builtin.command:
+      cmd: "selinux-activate"
+    when: ansible_os_family == "Debian"
+
+  - name: Ensure Selinux Service is enabled and running on RedHat
+    ansible.builtin.command:
+      cmd: "setenforce 1"
+    when: ansible_os_family == "RedHat"

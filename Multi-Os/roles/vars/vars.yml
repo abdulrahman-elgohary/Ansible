@@ -1,0 +1,7 @@
+
+ubuntu_web_page: /home/maven/Ans/Multi-Os/roles/web_page/ubuntu/index.html
+ubuntu_conf_file1: /etc/apache2/ports.conf
+ubuntu_conf_file2: /etc/apache2/sites-enabled/000-default.conf
+
+redhat_conf_file: /etc/httpd/conf/httpd.conf
+redhat_web_page: /home/maven/Ans/Multi-Os/roles/web_page/Redhat/index.html

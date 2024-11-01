@@ -1,0 +1,15 @@
+---
+  - name: Adding the New Port 82 to firewall of RedHat 
+    ansible.posix.firewalld:
+      port: 82/tcp
+      state: enabled
+      immediate: true
+      permanent: true
+    when: ansible_os_family == "RedHat"
+    
+
+  - name: Adding the New Port 82 to firewall of Ubuntu
+    ansible.builtin.shell: >
+      ufw \
+      allow 82/tcp
+    when: ansible_os_family == "Debian"

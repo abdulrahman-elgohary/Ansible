@@ -1,0 +1,18 @@
+---
+
+  - name: Change the Port Number in Configuration Files of Web Server to 82
+    ansible.builtin.lineinfile:
+      path: "{{ redhat_conf_file }}"
+      regexp: "^Listen"
+      line: "Listen 82"
+    when: ansible_os_family == "RedHat"
+
+  - name: Change the Port Number in Configuration Files of Web Server to 82
+    ansible.builtin.lineinfile:
+      path: "{{ item.path }}"
+      regexp: "{{item.regexp}}"
+      line: "{{item.line}}"
+    loop:
+      - { path: '{{ubuntu_conf_file1}}', regexp: '^Listen', line: 'Listen 82' }
+      - { path: '{{ubuntu_conf_file2}}', regexp: '80>$', line: '<VirtualHost *:82>' }
+    when: ansible_os_family == "Debian"

@@ -1,0 +1,7 @@
+download_dir: /tmp
+
+solr_version: 9.7.0
+
+solr_dir: /opt/solr
+
+solr_checksum : sha512:a80417a79c8371d2049868573927c587b4a5b7b37e938ca6e64e8a8842449f49eddc987968ddad5d6b6b1f4395990c1edc4576a884b3a62c4fbcd97091a659d9

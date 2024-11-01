@@ -1,0 +1,30 @@
+
+---
+# defaults file for first_role
+
+
+      - name: Update All Packages
+        ansible.builtin.package:
+          name: "*"
+          state: latest
+
+      
+      
+      - name: Upadte Ubuntu Cache
+        ansible.builtin.package:
+          update_cache: yes
+
+      - name: Update Ubuntu Packages
+        ansible.builtin.package:
+          upgrade: dist
+        when: ansible_os_family == "Debian"
+
+      - name: Install Selinux for Ubuntu 
+        ansible.builtin.package:
+          name: "{{item}}"
+          state: present
+        loop:
+          - policycoreutils 
+          - selinux-utils
+          - selinux-basics
+        when: ansible_os_family == "Debian"
