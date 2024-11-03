@@ -1,3 +1,5 @@
+![image](https://github.com/user-attachments/assets/66cdd32e-ade6-4f93-b32d-d7c3e726bee4)
+
 # Multi-OS Web Server Configuration Automation with Ansible
 
 ## Overview
