@@ -1,0 +1,9 @@
+[dns]
+dns.ansi.example.com
+
+[master]
+master.ansi.example.com
+
+[worker]
+managed1.ansi.example.com
+managed2.ansi.example.com
