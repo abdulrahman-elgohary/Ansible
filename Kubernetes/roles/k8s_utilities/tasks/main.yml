@@ -1,0 +1,36 @@
+---
+- name: Add the Kubernetes Repository
+  ansible.builtin.yum_repository:
+    name: Kubernetes
+    description: kubernetes
+    baseurl: https://pkgs.k8s.io/core:/stable:/{{REPO_VERSION}}/rpm/
+    gpgcheck: 1
+    gpgkey: https://pkgs.k8s.io/core:/stable:/{{REPO_VERSION}}/rpm/repodata/repomd.xml.key
+    file: kubernetes
+  notify: Update System
+
+- meta: flush_handlers
+
+
+- name: Install Kubelet, Kubeadm, Kubectl
+  ansible.builtin.dnf:
+    name: "{{item}}"
+    state: present
+  loop:
+    - kubelet-{{PACKAGE_VERSION}}
+    - kubeadm-{{PACKAGE_VERSION}}
+    - kubectl-{{PACKAGE_VERSION}}
+
+
+- name: Enable and Start Kubelet
+  ansible.builtin.service:
+    name: kubelet
+    state: started
+    enabled: true
+
+- name: Prevent automatic Upgrades
+  community.general.yum_versionlock:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl

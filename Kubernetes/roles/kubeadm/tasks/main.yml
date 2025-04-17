@@ -1,0 +1,68 @@
+---
+- name: Initiate the Control Node
+  ansible.builtin.command: kubeadm init --kubernetes-version={{PACKAGE_VERSION}} --pod-network-cidr=192.168.0.0/16 --cri-socket=unix:///run/containerd/containerd.sock
+  register: kubeadm_output
+  when: inventory_hostname in groups['master']
+
+- name: Create a directory for kubeadm Configuration
+  ansible.builtin.file:
+    path: /home/{{ansible_facts['env']['SUDO_USER']}}/.kube
+    state: directory
+    owner: "{{ansible_facts['env']['SUDO_USER']}}"
+    group: "{{ansible_facts['env']['SUDO_USER']}}"
+    mode: "0755"
+  when: inventory_hostname in groups['master']
+
+- name: Copy the configuration to the .kube directory
+  ansible.builtin.copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/{{ansible_facts['env']['SUDO_USER']}}/.kube/config
+    owner: "{{ansible_facts['env']['SUDO_USER']}}"
+    group: "{{ansible_facts['env']['SUDO_USER']}}"
+    mode: "0644"
+    remote_src: true
+  when: inventory_hostname in groups['master']
+
+- name: Download Calico manifest
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/calico.yaml
+    dest: /tmp/calico.yaml
+  when: inventory_hostname in groups['master']
+
+
+- name: Install Kubernetes Python client using /usr/bin/python3
+  ansible.builtin.pip:
+    name: kubernetes
+    executable: /usr/bin/pip3
+  when: inventory_hostname in groups['master']
+
+- name: Apply thte CNI Plugin
+  kubernetes.core.k8s:
+    kubeconfig: /home/{{ansible_facts['env']['SUDO_USER']}}/.kube/config
+    src: /tmp/calico.yaml
+    state: present
+  when: inventory_hostname in groups['master']
+
+- name: Ensure bash-completion is installed (RHEL 9)
+  become: true
+  ansible.builtin.package:
+    name: bash-completion
+    state: present
+
+- name: Generate kubectl bash completion script
+  become: true
+  ansible.builtin.command: kubectl completion bash
+  register: kubectl_completion_script
+  changed_when: false
+
+- name: Write kubectl completion to /etc/bash_completion.d/kubectl
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/bash_completion.d/kubectl
+    content: "{{ kubectl_completion_script.stdout }}"
+    mode: '0644'
+
+- name: Show join command for workers
+  ansible.builtin.debug:
+    var: kubeadm_output
+  when: inventory_hostname in groups['master']

@@ -1,0 +1,60 @@
+---
+- name: Add the Docker Repo for Container Runtime
+  ansible.builtin.command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo 
+  notify: Update System
+
+- meta: flush_handlers
+
+- name: Install Containerd runtime
+  ansible.builtin.yum:
+    name: containerd
+    state: latest
+
+- name: Start and enable Containerd
+  ansible.builtin.service:
+    name: containerd
+    state: started
+    enabled: true
+
+- name: Create a Directory for Containerd Configuration
+  ansible.builtin.file:
+    path: /etc/containerd
+    state: directory
+    mode: "0755"
+
+- name: Generate default containerd Config
+  ansible.builtin.command: containerd config default
+  register: containerd_config
+
+- name: Write Containerd Config to file
+  ansible.builtin.copy:
+    dest: /etc/containerd/config.toml
+    content: "{{ containerd_config.stdout }}"
+    mode: "0644"
+
+- name: Update Containerd Config to use SystemD
+  ansible.builtin.replace:
+    path: /etc/containerd/config.toml
+    regexp: "{{item.org}}"
+    replace: "{{item.des}}"
+  loop:
+    - org: 'SystemdCgroup = false'
+      des: 'SystemdCgroup = true'
+    
+    - org: 'sandbox_image = "registry.k8s.io/pause:3.8"'
+      des: 'sandbox_image = "registry.k8s.io/pause:3.10"'
+
+- name: Tell crictl to use Containerd
+  ansible.builtin.copy:
+    dest: /etc/crictl.yaml
+    content: |
+      runtime-endpoint: unix:///run/containerd/containerd.sock
+      image-endpoint: unix:///run/containerd/containerd.sock
+      timeout: 10
+      debug: false
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Containerd
+
+- meta: flush_handlers

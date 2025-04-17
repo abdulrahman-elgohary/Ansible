@@ -1,0 +1,10 @@
+---
+- name: Update System
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+
+- name: Restart Containerd
+  ansible.builtin.service:
+    name: containerd
+    state: restarted
