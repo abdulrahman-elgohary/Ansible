@@ -40,6 +40,4 @@
 
   roles:
     - Install_Enable_Bind
-    - Firewall
-    - Prompt
     - DNS_Configuration
