@@ -1,0 +1,14 @@
+---
+- name: Install Bind Packages
+  ansible.builtin.dnf:
+    name: "{{item}}"
+    state: present
+  loop:
+    - bind
+    - bind-utils
+
+- name: Make sure the DNS service is started and enabled
+  ansible.builtin.service:
+    name: named
+    state: started
+    enabled: true

@@ -1,0 +1,50 @@
+# ---
+# - tasks:
+#     - name: Prompt for ZONE information
+#       vars_prompt:
+#         - name: "ZONE_{{ item }}"
+#           prompt: "Enter name for ZONE {{ item }}"
+#           private: no
+#         - name: "EMAIL_{{ item }}"
+#           prompt: "Enter admin EMAIL for ZONE {{ item }}"
+#           private: no
+#         - name: "FOZONE_{{ item }}"
+#           prompt: "Enter forward ZONE filename for ZONE {{ item }}"
+#           private: no
+#         - name: "REZONE_{{ item }}"
+#           prompt: "Enter reverse ZONE filename for ZONE {{ item }}"
+#           private: no
+#       loop: "{{ range(1, ZONE_COUNT | int + 1) | list }}"
+
+#     - name: Prompt for DNS records
+#       vars_prompt:
+#         - name: "RECORD_NAME_{{ item }}"
+#           prompt: "Enter record name for record {{ item }}"
+#           private: no
+#         - name: "RECORD_IP_{{ item }}"
+#           prompt: "Enter IP address for record {{ item }}"
+#           private: no
+#       loop: "{{ range(1, RECORD_COUNT | int + 1) | list }}"
+  
+
+        
+#     - name: Set ZONE list from prompts
+#       set_fact:
+#         ZONES: >-
+#           {{ ZONES | default([]) + [{
+#             'NAME': lookup('vars', 'ZONE_' ~ item),
+#             'EMAIL': lookup('vars', 'EMAIL_' ~ item),
+#             'FOZONE': lookup('vars', 'FOZONE_' ~ item),
+#             'REZONE': lookup('vars', 'REZONE_' ~ item)
+#           }] }}
+#       loop: "{{ range(1, ZONE_COUNT | int + 1) | list }}"
+
+#     - name: Set records list from prompts
+#       set_fact:
+#         RECORDS: >-
+#           {{ RECORDS | default([]) + [{
+#             'NAME': lookup('vars', 'RECORD_NAME_' ~ item),
+#             'IP': lookup('vars', 'RECORD_IP_' ~ item)
+#           }] }}
+#       loop: "{{ range(1, RECORD_COUNT | int + 1) | list }}"
+      

@@ -1,0 +1,43 @@
+---
+- name: Set reverse zone
+  set_fact:
+    REVERSE_ZONE: "{{ SUBNET.split('.')[:3] | reverse | join('.') }}.in-addr.arpa"
+
+
+- name: Set short hostname variable
+  set_fact:
+    SHORT: "{{ ansible_facts['hostname'] }}"
+
+- name: Change the Configuration of DNS Server (named.conf) Using Template
+  ansible.builtin.template:
+    src: named.j2
+    dest: /etc/named.conf 
+    remote_src: false
+
+  notify: Restart Named
+
+- name: Adjust the Forward Zone file
+  ansible.builtin.template:
+    src: forward.j2
+    dest: /var/named/{{FOZONE}}
+    owner: root
+    group: named
+    mode: "0640"
+    remote_src: false
+  notify: Restart Named
+
+- name: Adjust the Reverse Zone file  
+  ansible.builtin.template:
+    src: reverse.j2
+    dest: /var/named/{{REZONE}}
+    owner: root
+    group: named
+    mode: "0640"
+    remote_src: false
+  notify: Restart Named
+
+- name: Make Check for the Configuration
+  ansible.builtin.shell: |
+      sudo named-checkconf
+      sudo named-checkzone {{ZONE}} /var/named/{{FOZONE}}
+      sudo named-checkzone {{REVERSE_ZONE}} /var/named/{{REZONE}}

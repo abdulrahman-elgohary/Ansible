@@ -1,0 +1,58 @@
+options {
+    listen-on port 53 { 127.0.0.1; {{IP}}; };
+    directory       "/var/named";
+    dump-file       "/var/named/data/cache_dump.db";
+    statistics-file "/var/named/data/named_stats.txt";
+    memstatistics-file "/var/named/data/named_mem_stats.txt";
+    secroots-file   "/var/named/data/named.secroots";
+    recursing-file  "/var/named/data/named.recursing";
+    allow-query     { 127.0.0.1; {{SUBNET}}; }; #Add your Subnet here 
+    allow-query-cache  { localhost; {{SUBNET}}; }; # Allow Cache of the resolving result
+    recursion yes;   #Required if the server resolves external domains
+    dnssec-validation yes;
+    listen-on-v6 { none; }; #Disabled IPv6
+   
+    managed-keys-directory "/var/named/dynamic";
+    geoip-directory "/usr/share/GeoIP";
+
+    pid-file "/run/named/named.pid";
+    session-keyfile "/run/named/session.key";
+
+    /* https://fedoraproject.org/wiki/Changes/CryptoPolicy */
+    include "/etc/crypto-policies/back-ends/bind.config";
+
+
+};
+
+logging {
+        channel default_debug {
+                file "data/named.run";
+                severity dynamic;
+        };
+};
+
+
+
+zone "." IN {
+    type hint;
+    file "named.ca";
+};
+
+include "/etc/named.rfc1912.zones";
+include "/etc/named.root.key";
+
+
+zone "{{ZONE}}" IN {  
+    type master;
+    file "{{FOZONE}}"; 
+    allow-query { 127.0.0.1; {{SUBNET}}; };
+};
+
+zone "{{REVERSE_ZONE}}" IN { # Note that in the reverse zone the ip is reversed
+    type master;
+    file "{{REZONE}}"; 
+    allow-query { 127.0.0.1; {{SUBNET}}; };
+};
+
+
+

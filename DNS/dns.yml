@@ -1,0 +1,45 @@
+---
+- name: Playbook to Configure a Server as a DNS 
+  hosts: dns 
+  vars_prompt:
+    - name: FQDN
+      prompt: "What is your FQDN"
+      private: no
+
+    - name: IP
+      prompt: "What is your DNS Server IP"
+      private: no
+
+    - name: SUBNET
+      prompt: "What is your Subnet Range"
+      private: no
+
+    - name: ZONE 
+      prompt: "What is your Zone name"
+      private: no
+
+    - name: EMAIL 
+      prompt: "What is Admin Email for this Zone"
+      private: no
+
+    - name: FOZONE 
+      prompt: "What is your Forward Zone filename"
+      private: no
+
+    - name: REZONE 
+      prompt: "What is your Reverse Zone filename"
+      private: no
+
+    - name: RECORD
+      prompt: "What is your record name"
+      private: no 
+
+    - name: RECORDIP
+      prompt: "What is your record IP"
+      private: no 
+
+  roles:
+    - Install_Enable_Bind
+    - Firewall
+    - Prompt
+    - DNS_Configuration
